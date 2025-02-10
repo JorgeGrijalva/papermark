@@ -264,6 +264,16 @@ export interface TeamDetail {
   }[];
 }
 
+export interface Contact {
+  id: string;
+  name: string;
+  email: string;
+  company: string;
+  message: string;
+  teamId: string;
+  createdAt: Date;
+}
+
 export const WatermarkConfigSchema = z.object({
   text: z.string().min(1, "Text is required."),
   isTiled: z.boolean(),

@@ -1,12 +1,17 @@
+import React from "react";
+
 import { useTeam } from "@/context/team-context";
 import useSWR from "swr";
 
+import { useUserAdmin } from "@/lib/swr/use-user";
 import { fetcher } from "@/lib/utils";
 
 import { NavMenu } from "../navigation-menu";
 
 export function SettingsHeader() {
   const teamInfo = useTeam();
+  const { user } = useUserAdmin();
+
   const { data: features } = useSWR<{
     tokens: boolean;
     incomingWebhooks: boolean;
@@ -75,6 +80,12 @@ export function SettingsHeader() {
             href: `/settings/incoming-webhooks`,
             segment: "incoming-webhooks",
             disabled: !features?.incomingWebhooks,
+          },
+          {
+            label: "Contact Us",
+            href: `/settings/contact-us`,
+            segment: "contact-us",
+            disabled: !user?.isAdmin,
           },
         ]}
       />

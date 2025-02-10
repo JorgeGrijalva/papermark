@@ -7,6 +7,7 @@ import { useTeam } from "@/context/team-context";
 import { CheckIcon } from "lucide-react";
 import { toast } from "sonner";
 
+import { UpgradeContactUsModal } from "@/components/billing/upgrade-contact-us-modal";
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
@@ -39,7 +40,6 @@ export default function Billing() {
   const [frequencyPro, setFrequencyPro] = useState(frequencies[0]);
   const [frequencyBusiness, setFrequencyBusiness] = useState(frequencies[0]);
   const [frequencyDatarooms, setFrequencyDatarooms] = useState(frequencies[0]);
-
   useEffect(() => {
     if (toggleProYear) {
       setFrequencyPro(frequencies[1]);
@@ -83,10 +83,7 @@ export default function Billing() {
     id: string;
     href: string;
     currentPlan: boolean;
-    price: {
-      monthly: string;
-      annually: string;
-    };
+    price: string;
     description: string;
     featureIntro: string;
     features: string[];
@@ -97,94 +94,14 @@ export default function Billing() {
     mostPopular: boolean;
   }[] = [
     {
-      name: "Free",
-      id: "tier-free",
-      href: "/login",
-      currentPlan: plan && plan == "free" ? true : false,
-      price: { monthly: "€0", annually: "€0" },
-      description: "The essentials to start sharing documents securely.",
-      featureIntro: "What's included:",
-      features: [
-        "1 user",
-        "10 links",
-        "10 documents",
-        "Unlimited visitors",
-        "Page-by-page analytics",
-        "Document sharing controls",
-        "Password protection",
-        "30-day analytics retention",
-      ],
-
-      bgColor: "bg-gray-200",
-      borderColor: "#bg-gray-800",
-      textColor: "text-foreground ",
-      buttonText: "Start for free",
-      mostPopular: false,
-    },
-    {
-      name: "Pro",
-      id: "tier-pro",
-      href: "/login",
-      currentPlan: plan && plan == "pro" ? true : false,
-      price: { monthly: "€39", annually: "€25" },
-      description: "The branded experience for your documents.",
-      featureIntro: "Everything in Free, plus:",
-      features: [
-        "2 users included",
-        "Unlimited links",
-        "100 documents",
-        "Custom branding",
-        "Folder organization",
-        "Require email verification",
-        "More file types: pppt, docx, excel",
-        "Papermark branding removed",
-        "1-year analytics retention",
-      ],
-      bgColor: "bg-gray-200",
-      borderColor: "#bg-gray-800",
-      textColor: "#bg-gray-500",
-      buttonText: "Upgrade to Pro",
-      mostPopular: false,
-    },
-    {
-      name: "Business",
-      id: "tier-business",
-      href: "/login",
-      currentPlan: plan && plan == "business" ? true : false,
-      price: { monthly: "€79", annually: "€45" },
-      description:
-        "The one for more control, data room, and multi-file sharing.",
-      featureIntro: "Everything in Pro, plus:",
-      features: [
-        "3 users included",
-        "1 dataroom",
-        "Unlimited documents",
-        "Custom domain for documents",
-        "Unlimited folder and subfolder levels",
-        "Large file uploads",
-        "Multi-file sharing",
-        "Allow/Block list",
-        "Dataroom branding",
-
-        "More file types: dmg (cad)",
-        "2-year analytics retention",
-      ],
-      bgColor: "#bg-gray-500",
-      borderColor: "#fb7a00",
-      textColor: "#bg-gray-500",
-      buttonText: "Upgrade to Business",
-      mostPopular: true,
-    },
-
-    {
       name: "Data Rooms",
       id: "tier-datarooms",
       href: "/login",
       currentPlan: plan && plan == "datarooms" ? true : false,
-      price: { monthly: "€199", annually: "€99" },
+      price: "Custom price",
       description:
         "The one for more control, data room, and multi-file sharing.",
-      featureIntro: "Everything in Business, plus:",
+      featureIntro: "What's included:",
       features: [
         "3 users included",
         "Unlimited data rooms",
@@ -201,7 +118,7 @@ export default function Billing() {
       bgColor: "#fb7a00",
       borderColor: "#fb7a00",
       textColor: "#black",
-      buttonText: "Upgrade to Data Rooms",
+      buttonText: "Contact Sales",
       mostPopular: true,
     },
   ];
@@ -218,6 +135,14 @@ export default function Billing() {
     "Custom onboarding",
   ];
 
+  const currentTier = tiers.find((tier) => tier.currentPlan);
+  if (currentTier) {
+    console.log(plan);
+    console.log(`El usuario tiene el tier: ${currentTier.name}`);
+  } else {
+    console.log("El usuario no tiene un tier activo.");
+  }
+
   return (
     <AppLayout>
       <main className="relative mx-2 mb-10 mt-4 space-y-8 overflow-hidden px-1 sm:mx-3 md:mx-5 md:mt-5 lg:mx-7 lg:mt-8 xl:mx-10">
@@ -233,182 +158,125 @@ export default function Billing() {
                 <p className="text-sm text-muted-foreground">
                   Manage your subscription and billing information.
                 </p>
-                <Link
+                {/* <Link
                   href="/settings/upgrade"
                   className="text-sm text-foreground underline-offset-4 hover:underline"
                 >
                   See all plans
-                </Link>
+                </Link> */}
               </div>
             </div>
           </div>
 
           <div className="bg-white dark:bg-gray-900">
-            <div className="mx-auto space-y-8">
-              <div className="isolate grid grid-cols-1 overflow-hidden rounded-xl border border-black dark:border-muted-foreground md:grid-cols-4">
+            <div className="mx-auto">
+              <div className="overflow-hidden rounded-xl">
                 {tiers.map((tier) => (
                   <div
                     key={tier.id}
-                    className="flex flex-col justify-between border-r-0 border-black dark:border-muted-foreground md:border-r md:last:!border-r-0"
+                    className="flex flex-col justify-between p-6 md:flex-row"
                   >
-                    <div>
-                      <div className="border-b border-black bg-gray-100 p-6 dark:border-muted-foreground dark:bg-gray-500">
-                        <h3
-                          id={tier.id}
-                          className="flex items-center gap-x-2 text-balance text-xl leading-8 text-foreground"
-                        >
-                          <span>{tier.name}</span>
-                          {tier.currentPlan ? (
-                            <Badge className="rounded-md">Current Plan</Badge>
-                          ) : null}
-                        </h3>
+                    <div className="md:w-1/3">
+                      <h3
+                        id={tier.id}
+                        className="mb-4 flex items-center gap-x-2 text-balance text-xl leading-8 text-foreground"
+                      >
+                        <span>{tier.name}</span>
+                        {tier.currentPlan ? (
+                          <Badge className="rounded-md">Current Plan</Badge>
+                        ) : null}
+                      </h3>
+                      <p className="mb-4 text-balance text-sm leading-6 text-gray-600 dark:text-muted-foreground">
+                        {tier.description}
+                      </p>
+                      <div className="mb-4">
+                        <span className="text-3xl font-semibold">
+                          {tier.price}
+                        </span>
+                        {/* <span className="text-sm text-muted-foreground">
+                          /month
+                        </span> */}
                       </div>
-                      <div className="p-6">
-                        <div className="mt-2">
-                          {tier.id === "tier-enterprise" ? (
-                            <div className="min-h-12">
-                              <div className="flex flex-col text-sm">
-                                <div className="h-6"></div>
-                                <h4>Get in touch</h4>
-                              </div>
-                            </div>
-                          ) : null}
-                        </div>
-
-                        {/* <p className="mt-4 text-balance text-sm leading-6 text-gray-600 dark:text-muted-foreground">
-                          {tier.description}
-                        </p> */}
-                        <ul
-                          role="list"
-                          className="mt-8 space-y-3 text-sm leading-6 text-gray-600 dark:text-muted-foreground"
-                        >
-                          <li>{tier.featureIntro}</li>
-                          {tier.features.map((feature) => (
-                            <li key={feature} className="flex gap-x-3">
-                              <CheckIcon
-                                className="h-6 w-5 flex-none text-[#fb7a00]"
-                                aria-hidden="true"
-                              />
-                              <span>{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                    <div className="p-6">
-                      {tier.id !==
-                      "tier-free" /** hide button on free tier */ ? (
-                        tier.currentPlan && isCustomer ? (
-                          <Button
-                            className="rounded-3xl"
-                            loading={clicked}
-                            onClick={() => {
-                              setClicked(true);
-                              fetch(
-                                `/api/teams/${teamInfo?.currentTeam?.id}/billing/manage`,
-                                {
-                                  method: "POST",
-                                },
-                              )
-                                .then(async (res) => {
-                                  const url = await res.json();
-                                  router.push(url);
-                                })
-                                .catch((err) => {
-                                  alert(err);
-                                  setClicked(false);
-                                });
-                            }}
-                          >
-                            {clicked
-                              ? "Redirecting to Customer Portal..."
-                              : "Manage Subscription"}
-                          </Button>
-                        ) : plan !== "free" && isCustomer ? (
-                          <Button
-                            className="rounded-3xl"
-                            variant={
-                              tier.id === "tier-business" ? "orange" : "default"
-                            }
-                            loading={clicked}
-                            onClick={() => {
-                              setClicked(true);
-                              fetch(
-                                `/api/teams/${teamInfo?.currentTeam?.id}/billing/manage`,
-                                {
-                                  method: "POST",
-                                },
-                              )
-                                .then(async (res) => {
-                                  const url = await res.json();
-                                  router.push(url);
-                                })
-                                .catch((err) => {
-                                  alert(err);
-                                  setClicked(false);
-                                });
-                            }}
-                          >
-                            {clicked
-                              ? "Redirecting to Customer Portal..."
-                              : tier.buttonText}
-                          </Button>
-                        ) : (
-                          <UpgradePlanModal
-                            clickedPlan={
-                              tier.name as "Pro" | "Business" | "Data Rooms"
-                            }
-                            trigger={"billing_page"}
-                          >
+                      {tier.id !== "tier-free" && (
+                        <div>
+                          {tier.currentPlan && isCustomer ? (
                             <Button
                               className="rounded-3xl"
-                              variant={
-                                tier.id === "tier-business"
-                                  ? "orange"
-                                  : "default"
-                              }
+                              loading={clicked}
+                              onClick={() => {
+                                setClicked(true);
+                                fetch(
+                                  `/api/teams/${teamInfo?.currentTeam?.id}/billing/manage`,
+                                  {
+                                    method: "POST",
+                                  },
+                                )
+                                  .then(async (res) => {
+                                    const url = await res.json();
+                                    router.push(url);
+                                  })
+                                  .catch((err) => {
+                                    alert(err);
+                                    setClicked(false);
+                                  });
+                              }}
                             >
-                              {tier.buttonText}
+                              {clicked
+                                ? "Redirecting to Customer Portal..."
+                                : "Manage Subscription"}
                             </Button>
-                          </UpgradePlanModal>
-                        )
-                      ) : null}
+                          ) : plan !== "free" && isCustomer ? (
+                            <Button
+                              className="rounded-3xl"
+                              variant="orange"
+                              loading={clicked}
+                              onClick={() => {
+                                setClicked(true);
+                                fetch(
+                                  `/api/teams/${teamInfo?.currentTeam?.id}/billing/manage`,
+                                  {
+                                    method: "POST",
+                                  },
+                                )
+                                  .then(async (res) => {
+                                    const url = await res.json();
+                                    router.push(url);
+                                  })
+                                  .catch((err) => {
+                                    alert(err);
+                                    setClicked(false);
+                                  });
+                              }}
+                            >
+                              {clicked
+                                ? "Redirecting to Customer Portal..."
+                                : tier.buttonText}
+                            </Button>
+                          ) : (
+                            <UpgradeContactUsModal
+                              clickedPlan={tier.name as "Data Rooms"}
+                              trigger={"billing_page"}
+                            >
+                              <Button className="rounded-3xl" variant="orange">
+                                {tier.buttonText}
+                              </Button>
+                            </UpgradeContactUsModal>
+                          )}
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))}
-              </div>
-              <div className="isolate grid grid-cols-1 overflow-hidden rounded-xl border border-black dark:border-muted-foreground">
-                <div
-                  key="tier-enterprise"
-                  className="flex flex-col justify-between border-r-0 border-black dark:border-muted-foreground md:border-r md:last:!border-r-0"
-                >
-                  <div>
-                    <div className="border-b border-black bg-gray-100 p-6 dark:border-muted-foreground dark:bg-gray-800">
-                      <h3
-                        id="tier-enterprise"
-                        className="flex items-center gap-x-2 text-balance text-xl leading-8 text-foreground"
-                      >
-                        <span>Enterprise</span>
-                      </h3>
-                    </div>
-                    <div className="p-6">
-                      <p className="mt-4 text-balance text-sm leading-6 text-gray-600 dark:text-muted-foreground">
-                        Self-hosted and advanced document infrastructure for
-                        your company.
-                      </p>
-                      <p className="mt-6 flex items-baseline gap-x-1">
-                        <span className="text-balance text-4xl font-medium text-foreground">
-                          Custom
-                        </span>
-                      </p>
-                      <ul
-                        role="list"
-                        className="mt-8 grid grid-cols-1 gap-y-3 text-sm leading-6 text-gray-600 dark:text-muted-foreground sm:grid-cols-2 md:grid-cols-3"
-                      >
-                        {enterpriseFeatures.map((feature) => (
-                          <li key={feature} className="flex gap-x-3">
+                    <div className="mt-6 md:mt-0 md:w-2/3">
+                      <h4 className="mb-4 text-sm font-semibold">
+                        {tier.featureIntro}
+                      </h4>
+                      <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm leading-6 text-gray-600 dark:text-muted-foreground">
+                        {tier.features.map((feature) => (
+                          <li
+                            key={feature}
+                            className="flex items-center gap-x-2"
+                          >
                             <CheckIcon
-                              className="h-6 w-5 flex-none text-[#fb7a00]"
+                              className="h-5 w-5 flex-shrink-0 text-[#fb7a00]"
                               aria-hidden="true"
                             />
                             <span>{feature}</span>
@@ -417,15 +285,7 @@ export default function Billing() {
                       </ul>
                     </div>
                   </div>
-                  <div className="p-6">
-                    <Link
-                      href="https://cal.com/marcseitz/papermark"
-                      target="_blank"
-                    >
-                      <Button className="rounded-3xl">Talk to us</Button>
-                    </Link>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
