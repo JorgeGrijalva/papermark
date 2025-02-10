@@ -23,6 +23,8 @@ export const getS3Client = () => {
           ),
         }
       : undefined,
+      // NORO UPDATE: Required for MinIO
+      forcePathStyle: true,
   });
 };
 
