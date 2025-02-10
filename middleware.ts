@@ -51,6 +51,8 @@ export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
     (process.env.NODE_ENV !== "development" &&
       !(
         host?.includes("localhost") ||
+        // NORO UPDATE: Add the host to the list of allowed hosts
+        host?.includes(process.env.HOST ?? "")  ||
         host?.includes("papermark.io") ||
         host?.endsWith(".vercel.app")
       ))

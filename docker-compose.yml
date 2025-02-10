@@ -4,7 +4,10 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
+        #REQUIRED
+        HOST: ${HOST}
         PORT: ${PORT:-3000}
+
         NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
         NEXTAUTH_URL: ${NEXTAUTH_URL}
         NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL}
