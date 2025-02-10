@@ -42,21 +42,25 @@ export const sendEmail = async ({
   try {
     const { data, error } = await resend.emails.send({
       from: marketing
-        ? "Marc from Papermark <marc@ship.papermark.io>"
+        ? `Marc from Papermark <marc@${process.env.RESEND_EMAIL}>`
         : system
-          ? "Papermark <system@papermark.io>"
+          ? `Papermark <system@${process.env.RESEND_EMAIL}>`
           : verify
-            ? "Papermark <system@verify.papermark.io>"
+            ? `Papermark <system@${process.env.RESEND_EMAIL}>`
             : !!scheduledAt
-              ? "Marc Seitz <marc@papermark.io>"
-              : "Marc from Papermark <marc@papermark.io>",
-      to: test ? "delivered@resend.dev" : to,
+              ? `Marc Seitz <marc@${process.env.RESEND_EMAIL}>`
+              : `Marc from Papermark <marc@${process.env.RESEND_EMAIL}>`,
+      to: test ? to : to,
       cc: cc,
-      replyTo: marketing ? "marc@papermark.io" : undefined,
+      replyTo: marketing ? `marc@${process.env.RESEND_EMAIL}` : undefined,
       subject,
       react,
       scheduledAt,
       text: plainText,
+
+
+
+
       headers: {
         "X-Entity-Ref-ID": nanoid(),
         ...(unsubscribeUrl ? { "List-Unsubscribe": unsubscribeUrl } : {}),
@@ -74,6 +78,7 @@ export const sendEmail = async ({
     }
 
     // If there's no error, return the data
+    console.log("[DATA]", data);
     return data;
   } catch (exception) {
     // Log and rethrow any caught exceptions for upstream handling
