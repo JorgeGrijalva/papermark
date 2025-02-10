@@ -43,6 +43,7 @@ model User {
   email          String?        @unique
   emailVerified  DateTime?
   image          String?
+  isAdmin        Boolean        @default(false)
   createdAt      DateTime       @default(now())
   accounts       Account[]
   sessions       Session[]
@@ -57,6 +58,18 @@ model User {
   endsAt         DateTime? // Stripe subscription end date
 
   restrictedTokens RestrictedToken[]
+}
+
+// sales contact form
+model SalesContact {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  company   String
+  message   String
+  createdAt DateTime @default(now())
+  teamId    String
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
 }
 
 model Team {
@@ -91,8 +104,9 @@ model Team {
   restrictedTokens RestrictedToken[]
   webhooks         Webhook[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  SalesContact SalesContact[]
 }
 
 model Brand {
@@ -323,27 +337,27 @@ model Domain {
 }
 
 model View {
-  id                String             @id @default(cuid())
-  link              Link               @relation(fields: [linkId], references: [id])
-  linkId            String
-  document          Document?          @relation(fields: [documentId], references: [id], onDelete: Cascade)
-  documentId        String?
-  dataroom          Dataroom?          @relation(fields: [dataroomId], references: [id], onDelete: Cascade)
-  dataroomId        String?
-  dataroomViewId    String? // This is the view ID from the dataroom
-  viewerEmail       String? // Email of the viewer if known
-  viewerName        String? // Name of the viewer if known
-  verified          Boolean            @default(false) // Whether the viewer email has been verified
-  viewedAt          DateTime           @default(now())
-  downloadedAt      DateTime? // This is the time the document was downloaded
-  reactions         Reaction[]
-  viewType          ViewType           @default(DOCUMENT_VIEW)
-  viewerId          String? // This is the viewer ID from the dataroom
-  viewer            Viewer?            @relation(fields: [viewerId], references: [id], onDelete: Cascade)
-  groupId           String? // This is the group ID from the dataroom
-  group             ViewerGroup?       @relation(fields: [groupId], references: [id], onDelete: SetNull)
-  feedbackResponse  FeedbackResponse?
-  agreementResponse AgreementResponse?
+  id                  String               @id @default(cuid())
+  link                Link                 @relation(fields: [linkId], references: [id])
+  linkId              String
+  document            Document?            @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  documentId          String?
+  dataroom            Dataroom?            @relation(fields: [dataroomId], references: [id], onDelete: Cascade)
+  dataroomId          String?
+  dataroomViewId      String? // This is the view ID from the dataroom
+  viewerEmail         String? // Email of the viewer if known
+  viewerName          String? // Name of the viewer if known
+  verified            Boolean              @default(false) // Whether the viewer email has been verified
+  viewedAt            DateTime             @default(now())
+  downloadedAt        DateTime? // This is the time the document was downloaded
+  reactions           Reaction[]
+  viewType            ViewType             @default(DOCUMENT_VIEW)
+  viewerId            String? // This is the viewer ID from the dataroom
+  viewer              Viewer?              @relation(fields: [viewerId], references: [id], onDelete: Cascade)
+  groupId             String? // This is the group ID from the dataroom
+  group               ViewerGroup?         @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  feedbackResponse    FeedbackResponse?
+  agreementResponse   AgreementResponse?
   customFieldResponse CustomFieldResponse?
 
   isArchived Boolean @default(false) // Indicates if the view is archived and not counted in the analytics
@@ -599,10 +613,8 @@ model ViewerGroup {
   id             String                      @id @default(cuid())
   name           String
   members        ViewerGroupMembership[]
-  domains        String[]
   links          Link[]
   accessControls ViewerGroupAccessControls[]
-  allowAll       Boolean                     @default(false)
 
   dataroomId String
   dataroom   Dataroom @relation(fields: [dataroomId], references: [id], onDelete: Cascade)

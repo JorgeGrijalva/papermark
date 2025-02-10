@@ -6,6 +6,7 @@ import { usePlausible } from "next-plausible";
 import X from "@/components/shared/icons/x";
 import { Button } from "@/components/ui/button";
 
+import { UpgradeContactUsModal } from "./upgrade-contact-us-modal";
 import { UpgradePlanModal } from "./upgrade-plan-modal";
 
 export default function ProBanner({
@@ -40,7 +41,7 @@ export default function ProBanner({
         Join to unlock custom branding, domains, team members, and data rooms.
       </p>
       <div className="flex">
-        <UpgradePlanModal clickedPlan={"Business"} trigger={"pro_banner"}>
+        {/* <UpgradePlanModal clickedPlan={"Business"} trigger={"pro_banner"}>
           <Button
             type="button"
             className="grow"
@@ -50,7 +51,17 @@ export default function ProBanner({
           >
             Upgrade
           </Button>
-        </UpgradePlanModal>
+        </UpgradePlanModal> */}
+        <div className="w-full">
+          <UpgradeContactUsModal
+            clickedPlan={"Business"}
+            trigger={"pro_banner"}
+          >
+            <Button className="w-full rounded" variant="orange">
+              Upgrade
+            </Button>
+          </UpgradeContactUsModal>
+        </div>
       </div>
     </aside>
   );
