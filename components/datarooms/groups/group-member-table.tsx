@@ -44,8 +44,9 @@ export default function GroupMemberTable({
 }) {
   const teamInfo = useTeam();
   const teamId = teamInfo?.currentTeam?.id;
-  const { viewerGroupMembers, viewerGroupDomains, viewerGroupAllowAll } =
-    useDataroomGroup();
+  const { viewerGroupMembers, viewerGroup } = useDataroomGroup();
+  const viewerGroupDomains = viewerGroup?.domains || [];
+  const viewerGroupAllowAll = viewerGroup?.allowAll || false;
 
   const [addMembersOpen, setAddMembersOpen] = useState<boolean>(false);
 

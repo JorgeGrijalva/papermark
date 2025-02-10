@@ -78,8 +78,6 @@ export function useDataroomGroup() {
   return {
     viewerGroup,
     viewerGroupMembers: viewerGroup?.members ?? [],
-    viewerGroupDomains: viewerGroup?.domains ?? [],
-    viewerGroupAllowAll: viewerGroup?.allowAll ?? false,
     viewerGroupPermissions: viewerGroup?.accessControls ?? [],
     loading: !viewerGroup && !error,
     error,
