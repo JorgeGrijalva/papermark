@@ -4,7 +4,7 @@ import { defineConfig, timeout } from "@trigger.dev/sdk/v3";
 
 export default defineConfig({
   // NORO UPDATE: Project Id
-  project: "proj_ctvfobwmaetramhqhetw",
+  project: "proj_hyuxrpzitgctywqbkmhv",
   dirs: ["./lib/trigger"],
   maxDuration: timeout.None, // no max duration
   retries: {
