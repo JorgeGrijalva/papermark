@@ -35,6 +35,7 @@ services:
 
         #TRIGGER V3
         TRIGGER_SECRET_KEY: ${TRIGGER_SECRET_KEY}
+        TRIGGER_API_KEY: ${TRIGGER_API_KEY}
         TRIGGER_API_URL: ${TRIGGER_API_URL}
         
         #STORAGE
